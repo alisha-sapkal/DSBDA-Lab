@@ -1,0 +1,49 @@
+import pandas as pd
+a = pd.read_csv('airquality.csv')
+a.head()
+
+a.columns
+
+a['Ozone']=a['Ozone'].fillna(a['Ozone'].mean())
+a['Solar.R']=a['Solar.R'].fillna(a['Solar.R'].mean())
+a['Wind']=a['Wind'].fillna(a['Wind'].mean())
+a['Humidity']=a['Humidity'].fillna(a['Humidity'].mode()[0])
+a.isnull().sum()
+
+from sklearn import preprocessing
+a['Humidity']=preprocessing.LabelEncoder().fit_transform(a['Humidity'])
+a
+
+import matplotlib.pyplot as plt
+labels = ['Ozone', 'Solar.R', 'Wind', 'Temp']
+sizes = [a['Ozone'].mean(), a['Solar.R'].mean(), a['Wind'].mean(), a['Temp'].mean()]
+colors = ['Green', 'Blue', 'Red', 'Yellow']
+explode = (0.1, 0, 0, 0)
+
+plt.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True, startangle=140)
+plt.title('Pie Chart')
+plt.show()
+
+import numpy as np
+h = a.iloc[1:21,3]
+y_pos = np.arange(len(h))
+v = range(1, 21)
+plt.bar(y_pos, h, align = 'center', alpha =0.5)
+plt.xticks(y_pos, v)
+plt.ylabel('range')
+plt.xlabel('Days')
+plt.title('Bar Plot')
+plt.show()
+
+e=a.iloc[:,3]
+plt.hist(e, bins='auto')
+plt.title('Histogram')
+plt.ylabel("Temperature")
+plt.xlabel("Values")
+plt.show()
+
+plt.figure(figsize=(8, 6))
+sns.heatmap(a.corr(), annot=True, cmap='coolwarm')
+plt.title('Correlation Heatmap')
+plt.show()
+
