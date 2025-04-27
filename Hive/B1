@@ -1,0 +1,20 @@
+import pandas as pd
+a = pd.read_csv('dataset_Facebook.csv', delimiter=';')
+a.head()
+
+subset1 = a[['Page total likes', 'Type', 'Category']]
+subset1.head()
+
+subset2 = a[['Lifetime Engaged Users', 'Lifetime Post Consumptions']]
+subset2.head()
+
+merged = pd.merge(subset1, subset2, left_index=True, right_index=True)
+merged.head()
+
+sorted = merged.sort_values(by='Category', ascending=True)
+sorted.head()
+
+sorted.transpose()
+
+a.shape
+pd.melt(a, id_vars =['Type'], value_vars =['Category'])
