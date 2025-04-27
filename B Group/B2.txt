@@ -1,0 +1,83 @@
+import pandas as pd
+a = pd.read_csv('airquality.csv')
+a.head()
+
+a.columns
+
+a.dtypes
+
+a['Ozone'] = a['Ozone'].astype('float32')
+a['Solar.R'] = a['Solar.R'].astype('float32')
+a['Wind'] = a['Wind'].astype('float32')
+
+a.info()
+
+a = a.drop_duplicates()
+
+a.isna().sum()
+
+percent = a.isnull().sum() * 100 / len(a)
+missing_data = pd.DataFrame({'Missing Percentage' : percent})
+missing_data
+
+missing_data.sort_values('Missing Percentage', ascending = False)
+
+a = a.drop(['Humidity', 'Ozone', 'Solar.R'], axis=1)
+a.head()
+
+a.columns
+
+a = a.drop(['Unnamed: 0'], axis=1)
+a.head()
+
+col_flt = ['Wind']
+col_num = ['Temp', 'Month', 'Day']
+
+for col in a.columns:
+  if a[col].dtype == 'object' or a[col].dtype == 'string':
+    a[col] = a[col].fillna(a[col].mode()[0])
+  else:
+    a[col] = a[col].fillna(a[col].mean())
+
+a.isna().sum()
+
+a.isnull().sum()
+
+subset1 = a[['Wind', 'Temp']]
+subset2 = a[['Month', 'Day']]
+
+integrated = pd.concat([subset1, subset2], axis=1)
+integrated.head()
+
+def remove_outliers(column):
+  q1 = column.quantile(0.25) 
+  q3 = column.quantile(0.75) 
+  iqr = q3 - q1
+  threashold = 1.5 * iqr
+  outliers = ((column < (q1 - threashold)) | (column > (q3 + threashold)))
+  return column[~outliers] 
+
+a.columns
+
+a.dtypes
+
+col_name = ['Temp', 'Month', 'Day']
+for col in col_name:
+    a[col] = remove_outliers(a[col])
+
+a.head()
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+plt.figure(figsize=(6, 6)) 
+
+for col in col_name:
+    sns.boxplot(data=a[col])
+    plt.title(col)
+    plt.show()
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+a['Month'] = le.fit_transform(a['Month'])
+a['Day'] = le.fit_transform(a['Day'])
+a.head()
