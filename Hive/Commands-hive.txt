@@ -32,7 +32,7 @@ ls
 
 tar xzf apache-hive-2.3.9-bin.tar.gz
 
-lsls
+lsls // it should be ls -l
 
 mv apache-hive-2.3.9-bin hive
 
