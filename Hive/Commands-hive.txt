@@ -1,0 +1,100 @@
+#HIVE VERSION TO BE USED - 2.3.9
+
+sudo apt-get install openjdk-8-jdk
+
+java -version
+
+nano ~/.bashrc
+#in bashrc file put the below command
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+
+source ~/.bashrc
+
+echo $JAVA_HOME
+
+su - hdp123
+
+start-all.sh
+
+jps
+
+cd /usr/local/hadoop/etc/hadoop
+
+nano hadoop-env.sh
+#put the below command
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64
+
+cp /home/stud/Desktop/apache-hive-2.3.9-bin.tar.gz  /usr/local
+
+cd /usr/local
+
+ls
+
+tar xzf apache-hive-2.3.9-bin.tar.gz
+
+lsls
+
+mv apache-hive-2.3.9-bin hive
+
+ls
+
+nano ~/.bashrc
+#put the below commnand
+export HIVE_HOME=/usr/local/hive
+
+cd hadoop
+
+cd bin
+
+hdfs dfs -mkdir -p /usr/hive/warehouse
+
+hdfs dfs -mkdir -p /tmp/hive
+
+hdfs dfs -chmod 777 /tmp
+
+hdfs dfs -chmod 777 /usr/hive/warehouse
+
+hdfs dfs -chmod 777 /tmp/hive
+
+cd ..
+
+cd ..
+
+cd hive
+
+ls
+
+cd bin
+
+ls
+
+sudo chown -R hdp123 /usr/local/hive/bin/
+sudo chmod u+rwx /usr/local/hive/bin/
+
+./schematool -dbType derby -initSchema
+
+ls
+
+./hive
+
+hive> show databases;
+
+hive> create database d1;
+
+hive> create table emp(ename string,esal int) row format delimited fields terminated by ',' stored as textfile;
+
+hive> load data local inpath '/home/stud/Desktop/emp_details.txt' into table emp;
+
+hive> show tables;
+
+hive> select * from emp;
+
+exit;
+
+
+
+
+
+
+
+
