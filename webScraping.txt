@@ -1,11 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
+import matplotlib.pyplot as plt
 
-HEADERS = ({'User-Agent':
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
-            AppleWebKit/537.36 (KHTML, like Gecko) \
-            Chrome/90.0.4430.212 Safari/537.36',
-            'Accept-Language': 'en-US, en;q=0.5'})
+HEADERS = ({
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.212 Safari/537.36',
+    'Accept-Language': 'en-US, en;q=0.5'
+})
 
 def getdata(url):
     res = requests.get(url, headers=HEADERS)
@@ -14,47 +14,59 @@ def getdata(url):
 def gethtml(url):
     data = getdata(url)
     soup = BeautifulSoup(data, 'html.parser')
-    return (soup)
+    return soup
 
 site_url = "https://www.amazon.in/Dyson-Supersonic-dryer-Nickel-copper/dp/B0C3J21K1G?th=1"
 soup = gethtml(site_url)
 
 def getCustomerName(soup):
-    data_string = ""
-    custumer_list = []
-
+    customer_list = []
     for item in soup.find_all("span", class_="a-profile-name"):
-        data_string = data_string + item.get_text()
-        custumer_list.append(data_string)
-        data_string = ""
-    return custumer_list
+        customer_list.append(item.get_text().strip())
+    return customer_list
 
 def getReviews(soup):
     review_list = []
     for item in soup.find_all("span", class_="a-size-medium a-color-base"):
-        review_list.append(item.get_text())
+        review_list.append(item.get_text().strip())
     return review_list
 
 def getRatings(soup):
     rating_list = []
     for item in soup.find_all("i", class_="a-icon-star"):
-        rating_list.append(item.get_text())
+        rating_list.append(item.get_text().strip())
     return rating_list
 
 def getCommentTags(soup):
     tag_list = []
     for item in soup.find_all("span", class_="a-size-base a-color-secondary"):
-        tag_list.append(item.get_text())
+        tag_list.append(item.get_text().strip())
     return tag_list
 
-custumer_res = getCustomerName(soup)
-print("Customer Names:", custumer_res)
-
+# Extracting the details
+customer_res = getCustomerName(soup)
 review_res = getReviews(soup)
-print("\nReviews:", review_res)
-
 rating_res = getRatings(soup)
-print("\nRatings:", rating_res)
-
 tag_res = getCommentTags(soup)
-print("\nComment Tags:", tag_res)
+
+# Clean and count ratings
+ratings = [r.split(" ")[0] for r in rating_res if r]  # Extract numerical ratings
+ratings_count = {r: ratings.count(r) for r in set(ratings)}  # Count each unique rating
+
+# Create bar chart for ratings
+plt.figure(figsize=(8, 6))
+plt.bar(ratings_count.keys(), ratings_count.values(), color='skyblue')
+plt.title("Distribution of Ratings")
+plt.xlabel("Rating (Stars)")
+plt.ylabel("Number of Reviews")
+plt.xticks(rotation=45)
+plt.show()
+
+# Create a pie chart for reviews count (if needed)
+review_counts = [int(''.join(filter(str.isdigit, r))) for r in review_res if r.isdigit()]
+review_sum = sum(review_counts)
+
+plt.figure(figsize=(8, 6))
+plt.pie([review_sum, len(review_res) - review_sum], labels=['Reviews Available', 'No Reviews'], autopct='%1.1f%%', colors=['lightcoral', 'lightgray'])
+plt.title("Reviews Available vs. No Reviews")
+plt.show()
