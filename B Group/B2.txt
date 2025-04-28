@@ -6,6 +6,7 @@ a.columns
 
 a.dtypes
 
+#data cleaning
 a['Ozone'] = a['Ozone'].astype('float32')
 a['Solar.R'] = a['Solar.R'].astype('float32')
 a['Wind'] = a['Wind'].astype('float32')
@@ -30,6 +31,7 @@ a.columns
 a = a.drop(['Unnamed: 0'], axis=1)
 a.head()
 
+
 col_flt = ['Wind']
 col_num = ['Temp', 'Month', 'Day']
 
@@ -43,12 +45,15 @@ a.isna().sum()
 
 a.isnull().sum()
 
+#Data integration
 subset1 = a[['Wind', 'Temp']]
 subset2 = a[['Month', 'Day']]
 
+#Data integration
 integrated = pd.concat([subset1, subset2], axis=1)
 integrated.head()
 
+#Error Correcting
 def remove_outliers(column):
   q1 = column.quantile(0.25) 
   q3 = column.quantile(0.75) 
@@ -67,6 +72,7 @@ for col in col_name:
 
 a.head()
 
+#Data model building
 import seaborn as sns
 import matplotlib.pyplot as plt
 plt.figure(figsize=(6, 6)) 
