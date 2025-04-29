@@ -73,7 +73,7 @@ plt.pie([review_sum, len(review_res) - review_sum], labels=['Reviews Available',
 plt.title("Reviews Available vs. No Reviews")
 plt.show()
 
-
+===================================================================================================================================================================
 #2nd Alternative
 
 import requests
