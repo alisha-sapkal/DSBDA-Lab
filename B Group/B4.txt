@@ -47,3 +47,28 @@ sns.heatmap(a.corr(), annot=True, cmap='coolwarm')
 plt.title('Correlation Heatmap')
 plt.show()
 
+=================================================================================================
+
+l=a.iloc[:16,0]
+m=a.iloc[:16,2]
+plt.plot(l,label="Ozone",marker = '*',linestyle = "dotted")
+plt.plot(m,label = 'wind',marker = 'o',linestyle = "dashed")
+plt.ylim(0,60)
+plt.legend()
+plt.title("Ozone and Wind chart for 1st-15th May")
+plt.ylabel("Value Range")
+plt.xlabel("Days")
+
+s=a.iloc[1:91,2]
+t=a.iloc[1:91,3]
+plt.scatter(s,t)
+plt.title("Wind Vs Temperature")
+plt.xlabel("Wind")
+plt.ylabel("Temperature")
+plt.show()
+
+a.boxplot(by='Month',column=['Temp'], grid=False)
+
+sns.set(style = "dark")
+sns.pairplot(a)
+plt.show()
