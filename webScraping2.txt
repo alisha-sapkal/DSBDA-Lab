@@ -1,0 +1,67 @@
+import requests
+from bs4 import BeautifulSoup
+import pandas as pd
+
+# Headers for request
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) \
+                    AppleWebKit/537.36 (KHTML, like Gecko) \
+                    Chrome/90.0.4430.212 Safari/537.36',
+    'Accept-Language': 'en-US, en;q=0.5'
+}
+
+# Scrape the data
+def getdata(site_url):
+    res = requests.get(site_url, headers=HEADERS)
+    return res.text
+
+def gethtml(site_url):
+    data = getdata(site_url)
+    soup = BeautifulSoup(data, 'html.parser')
+    return soup
+
+# Corrected site URL (your URL was broken/missing quotes)
+site_url = "https://www.amazon.in/ASIAN-Delta-21-Running-Shoes-Casual/dp/B09RX4LPS4/?encoding=UTF8&ref=pd_hp_d_atf_dealz_sv&psc=1"
+
+# Get HTML content
+soup = gethtml(site_url)
+
+# Functions to extract customer name, rating, and review date
+def getCustomerName(soup):
+    customer_list = [item.get_text(strip=True) for item in soup.find_all("span", class_="a-profile-name")]
+    return customer_list
+
+def getRating(soup):
+    rating_list = [item.get_text(strip=True) for item in soup.find_all("span", class_="a-icon-alt")]
+    return rating_list
+
+def getReviewDate(soup):
+    date_list = [item.get_text(strip=True) for item in soup.find_all("span", class_="review-date")]
+    return date_list
+
+def getReview(soup):
+    review_list = [item.get_text(strip=True) for item in soup.find_all("div", class_="a-expander-content")]
+    return review_list
+
+# Extract data
+customer_res = getCustomerName(soup)
+rating = getRating(soup)
+date = getReviewDate(soup)
+review=getReview(soup)
+
+# Ensure all lists have the same length
+min_len = min(len(customer_res), len(rating), len(date), len(review))
+customer_res = customer_res[:min_len]
+rating = rating[:min_len]
+date = date[:min_len]
+review=review[:min_len]
+
+# Create a Pandas DataFrame
+df = pd.DataFrame({
+    'Customer Name': customer_res,
+    'Rating': rating,
+    'Review Date': date,
+})
+
+# Display the DataFrame
+df
