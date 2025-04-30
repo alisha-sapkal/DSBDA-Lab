@@ -1,25 +1,44 @@
-import pandas as pd
-a = pd.read_csv('dataset_Facebook.csv', delimiter=';')
-a.head()
+import pandas as ps
+import numpy as np
+import matplotlib.pyplot as plt
 
-#Create data subset
-subset1 = a[['Page total likes', 'Type', 'Category']]
+df = ps.read_csv("dataset_Facebook.csv",delimiter=';')
+
+df.shape
+
+df.head()
+
+subset1 = df[["Type", "like"]]
+
 subset1.head()
 
-subset2 = a[['Lifetime Engaged Users', 'Lifetime Post Consumptions']]
+subset2 = df.loc[2:3]
+
 subset2.head()
 
-# merge data
-merged = pd.merge(subset1, subset2, left_index=True, right_index=True)
-merged.head()
+subset3 = df[["comment", "share"]]
 
-#sort data
-sorted = merged.sort_values(by='Category', ascending=True)
-sorted.head()
+subset3.head()
 
-#transpose
-sorted.transpose()
+m1 = ps.concat([subset1, subset3])
+m1.head()
 
-#shape and reshape
-a.shape
+subset4 = df.loc[0:1]
+subset4.head()
+
+m2 = ps.concat([subset4, subset2])
+m2.head()
+
+s1 = subset1.sort_values("like")
+s1.head()
+
+s2= subset2.sort_values(by =["Type","like"])
+s2.head()
+
+t1=s1.transpose()
+t1.head()
+
+subset3_melted = subset3.melt(var_name='Metric', value_name='Value')
+subset3_melted.head()
+
 pd.melt(a, id_vars =['Type'], value_vars =['Category'])
